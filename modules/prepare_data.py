@@ -40,7 +40,7 @@ def load_data(data_dir):
     return np.array(X), np.array(y)
 
 if __name__ == "__main__":
-    data_path = "data/ravdess/Audio_Speech_Actors_01-24"
+    data_path = "data/Audio_Speech_Actors_01-24"
     print("Извлекаем признаки из аудиофайлов...")
     X, y = load_data(data_path)
     with open("data/features.pkl", "wb") as f:
