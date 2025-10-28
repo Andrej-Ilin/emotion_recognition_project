@@ -1,19 +1,27 @@
-# Emotion Recognition Project (Audio-based)
+# Emotion Recognition Project (Audio-based & Multimodal Extension)
+
+![Roadmap](docs/roadmap_emotion_project.png)
 
 ## Overview
-This project is focused on detecting emotions from speech using deep learning. It uses a Long Short-Term Memory (LSTM) neural network trained on the RAVDESS dataset to classify emotions from audio recordings. The project supports both uploading .wav files and recording audio directly through a Streamlit web interface.
+This project focuses on detecting emotions from speech using deep learning.  
+It currently uses an LSTM model trained on the **RAVDESS** dataset, but is designed to evolve into a **multimodal emotion recognition system** combining **audio + facial expressions**.
+
+---
 
 ## Features
-- Audio recording via browser using Streamlit
-- MFCC-based feature extraction for sequential audio data
-- LSTM model trained on the RAVDESS dataset
-- Real-time emotion prediction
-- Visual waveform and probability distribution
+- 🎙️ Audio recording via Streamlit interface  
+- 🔊 MFCC-based feature extraction  
+- 🧠 LSTM neural network trained on RAVDESS  
+- ⚡ Real-time emotion prediction  
+- 📊 Waveform and probability visualization  
+
+---
 
 ## Limitations
-- The model was trained on the RAVDESS dataset, which contains English speech.
-- Predictions may be inaccurate for non-English (e.g. Russian) speech due to different phonetic and prosodic characteristics.
-- Further training or fine-tuning with Russian-language emotion datasets is recommended for improved multilingual accuracy.
+- The base model was trained on **English** speech (RAVDESS).  
+- For accurate multilingual recognition (e.g., Russian), retraining or fine-tuning on new datasets is required.  
+
+---
 
 ## Installation
 
@@ -22,55 +30,95 @@ This project is focused on detecting emotions from speech using deep learning. I
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-```
-
-## Data Setup
-1. Download the RAVDESS dataset from Zenodo: [https://zenodo.org/record/1188976](https://zenodo.org/record/1188976)
-2. Extract it into `data/Audio_Speech_Actors_01-24/`
-3. Run the feature extraction:
-   ```bash
-   python modules/prepare_data.py
-   ```
-
-## Model Training
-```bash
-python modules/train_model.py
-```
-
-## Run Streamlit Dashboard
-
-### With Virtual Environment
-```bash
-source venv/bin/activate
-streamlit run dashboard/app.py
-```
-Then open http://localhost:8501 in your browser.
+````
 
 ### With Docker
+
 ```bash
 docker build -t emotion-recognition .
 docker run -p 8501:8501 emotion-recognition
 ```
-Then open http://localhost:8501 in your browser.
+
+Then open [http://localhost:8501](http://localhost:8501) in your browser.
+
+---
+
+## Data Setup
+
+1. Download RAVDESS: [Zenodo link](https://zenodo.org/record/1188976)
+2. Extract into:
+
+   ```
+   data/Audio_Speech_Actors_01-24/
+   ```
+3. Run preprocessing:
+
+   ```bash
+   python modules/prepare_data.py
+   ```
+
+---
+
+## Model Training
+
+```bash
+python modules/train_model.py
+```
+
+---
+
+## Run Streamlit Dashboard
+
+```bash
+source venv/bin/activate
+streamlit run dashboard/app.py
+```
+
+Then open [http://localhost:8501](http://localhost:8501).
+
+---
 
 ## Directory Structure
 
 ```
 emotion_recognition_project/
-├── data/ # Dataset and extracted features
-├── models/ # Trained models (e.g. audio_lstm.h5)
-├── modules/ # Core modules (training, prediction, feature extraction)
-├── dashboard/ # Streamlit app
-├── requirements.txt # Project dependencies
+├── data/                  # Dataset and extracted features
+├── models/                # Trained models (e.g., audio_lstm.h5)
+├── modules/               # Core ML modules (training, inference, preprocessing)
+├── dashboard/             # Streamlit UI
+├── docs/                  # Documentation, roadmap images, etc.
+├── requirements.txt
 └── README.md
 ```
 
-## What's Next
-- Fine-tune or retrain model with Russian-language emotional speech datasets
-- Add face-based emotion detection module (via OpenCV + CNN)
-- Fuse audio and visual predictions for multi-modal emotion recognition
-- Deploy full system via Docker or cloud (e.g., Hugging Face Spaces or Streamlit Cloud)
+---
+
+## 🧩 Project Roadmap
+
+| Phase                               | Weeks | Goals                                                         | Deliverables                     |
+| :---------------------------------- | :---- | :------------------------------------------------------------ | :------------------------------- |
+| **1. Environment Setup**            | 1–2   | Clean repo, configure venv/Docker, test scripts               | Working reproducible environment |
+| **2. Audio Model Upgrade**          | 3–6   | Integrate Wav2Vec2/HuBERT embeddings, compare models          | Improved accuracy, charts        |
+| **3. Multimodal Extension**         | 7–10  | Add facial emotion detection (CNN + OpenCV)                   | Combined audio-visual model      |
+| **4. Deployment & MCP Integration** | 11–12 | Docker + Streamlit server deployment, remote training via MCP | Hosted demo or container         |
+| **5. Experimentation & Analysis**   | 13–14 | Run comparative experiments, visual analysis                  | Results, plots, logs             |
+| **6. Documentation & Defense Prep** | 15–16 | Finalize README, presentation, report                         | Full project ready for defense   |
 
 ---
 
-This project is a great foundation for building a multilingual, multimodal emotion recognition system.
+## What's Next
+
+* 🗣️ Fine-tune with Russian emotion datasets
+* 👁️ Add face-based emotion detection
+* 🔗 Fuse audio & visual features
+* ☁️ Deploy via Docker or Hugging Face Spaces
+* 📊 Publish comparison results for your MSc thesis
+
+---
+
+## License
+
+MIT License
+© 2025 Andrey Ilin
+
+```
