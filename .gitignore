@@ -3,3 +3,5 @@ data/
 *.pkl
 models/
 fresh_venv/
+*.pyc
+__pycache__/

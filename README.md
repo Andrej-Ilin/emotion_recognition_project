@@ -16,6 +16,8 @@ This project is focused on detecting emotions from speech using deep learning. I
 - Further training or fine-tuning with Russian-language emotion datasets is recommended for improved multilingual accuracy.
 
 ## Installation
+
+### With Virtual Environment
 ```bash
 python3 -m venv venv
 source venv/bin/activate
@@ -36,9 +38,20 @@ python modules/train_model.py
 ```
 
 ## Run Streamlit Dashboard
+
+### With Virtual Environment
 ```bash
+source venv/bin/activate
 streamlit run dashboard/app.py
 ```
+Then open http://localhost:8501 in your browser.
+
+### With Docker
+```bash
+docker build -t emotion-recognition .
+docker run -p 8501:8501 emotion-recognition
+```
+Then open http://localhost:8501 in your browser.
 
 ## Directory Structure
 

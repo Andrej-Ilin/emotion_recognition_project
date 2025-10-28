@@ -15,16 +15,19 @@ EMOTION_LABELS = {
     '08': 'surprised'
 }
 
+
 def extract_mfcc(file_path, n_mfcc=40, max_len=174):
     """Извлекает MFCC-признаки из аудиофайла и обрезает/дополняет до одинаковой длины"""
     y, sr = librosa.load(file_path, sr=22050)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
     if mfcc.shape[1] < max_len:
         pad_width = max_len - mfcc.shape[1]
-        mfcc = np.pad(mfcc, pad_width=((0, 0), (0, pad_width)), mode='constant')
+        mfcc = np.pad(mfcc, pad_width=(
+            (0, 0), (0, pad_width)), mode='constant')
     else:
         mfcc = mfcc[:, :max_len]
     return mfcc
+
 
 def load_data(data_dir):
     X, y = [], []
@@ -39,8 +42,9 @@ def load_data(data_dir):
                     y.append(EMOTION_LABELS[emotion_code])
     return np.array(X), np.array(y)
 
+
 if __name__ == "__main__":
-    data_path = "data/Audio_Speech_Actors_01-24"
+    data_path = "data/"
     print("Извлекаем признаки из аудиофайлов...")
     X, y = load_data(data_path)
     with open("data/features.pkl", "wb") as f:
