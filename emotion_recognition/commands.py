@@ -1,7 +1,6 @@
 """Main command line interface for emotion recognition package."""
 
 import logging
-from typing import Optional
 
 import hydra
 from omegaconf import DictConfig

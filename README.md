@@ -111,6 +111,26 @@ python emotion_recognition/commands.py train --config-name=custom
 
 ## 🔧 Data Pipeline
 
+### Dataset Download and Setup
+
+To get started with the RAVDESS dataset:
+
+```bash
+# Download RAVDESS dataset from Zenodo (2.4GB)
+wget https://zenodo.org/record/1188976/files/Audio_Speech_Actors_01-24.zip
+
+# Create data directory and extract
+mkdir -p data/
+unzip Audio_Speech_Actors_01-24.zip -d data/
+
+# Verify the structure
+# Expected: data/Audio_Speech_Actors_01-24/Actor_01-24/
+```
+
+**Alternative download methods**:
+- Direct download: [https://zenodo.org/record/1188976](https://zenodo.org/record/1188976)
+- Using curl: `curl -L https://zenodo.org/record/1188976/files/Audio_Speech_Actors_01-24.zip -o Audio_Speech_Actors_01-24.zip`
+
 ### Data Preparation
 
 ```bash
@@ -127,6 +147,31 @@ dvc repro prepare_data
 - **Emotions**: neutral, calm, happy, sad, angry, fearful, disgust, surprised
 - **Format**: 24 actors, 2 repetitions, 8 emotions = 384 audio files
 - **Features**: 40 MFCC coefficients, 174 timesteps
+- **Expected directory structure**:
+  ```
+  data/
+  └── Audio_Speech_Actors_01-24/
+      ├── Actor_01/
+      │   ├── 03-01-01-01-01-01-01.wav  # neutral
+      │   ├── 03-01-01-01-01-01-02.wav  # calm
+      │   └── ... (8 emotions × 2 repetitions)
+      └── Actor_24/
+  ```
+
+### DVC Integration (Optional)
+
+To track the dataset with DVC:
+
+```bash
+# Add dataset to DVC
+dvc add data/Audio_Speech_Actors_01-24/
+
+# Commit the DVC file
+git add data/Audio_Speech_Actors_01-24.dvc
+git commit -m "Add RAVDESS dataset to DVC"
+```
+
+**Note**: The dataset is large (~2.4GB), so consider using external storage for DVC remotes.
 
 ## 🏋️ Model Training
 
