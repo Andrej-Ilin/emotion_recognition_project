@@ -1,7 +1,9 @@
+import threading
+import wave
+
 import cv2
 import pyaudio
-import wave
-import threading
+
 
 def video_capture():
     cap = cv2.VideoCapture(0)
@@ -10,10 +12,11 @@ def video_capture():
         if not ret:
             break
         cv2.imshow("Video Capture", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord("q"):
             break
     cap.release()
     cv2.destroyAllWindows()
+
 
 def audio_capture(filename="output.wav"):
     p = pyaudio.PyAudio()
@@ -28,11 +31,12 @@ def audio_capture(filename="output.wav"):
     stream.close()
     p.terminate()
 
-    with wave.open(filename, 'wb') as wf:
+    with wave.open(filename, "wb") as wf:
         wf.setnchannels(1)
         wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
         wf.setframerate(44100)
-        wf.writeframes(b''.join(frames))
+        wf.writeframes(b"".join(frames))
+
 
 def start_capture():
     video_thread = threading.Thread(target=video_capture)
@@ -43,6 +47,7 @@ def start_capture():
 
     video_thread.join()
     audio_thread.join()
+
 
 if __name__ == "__main__":
     start_capture()

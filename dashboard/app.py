@@ -1,73 +1,79 @@
-import streamlit as st
-import librosa
-import librosa.display
-import numpy as np
-import matplotlib.pyplot as plt
-import pickle
-import soundfile as sf
 import tempfile
-from tensorflow.keras.models import load_model
-from sklearn.preprocessing import LabelEncoder
+
+import matplotlib.pyplot as plt
+import streamlit as st
 from audio_recorder_streamlit import audio_recorder
 
-# ===== Функции =====
-@st.cache_resource
-def load_audio_model():
-    return load_model("models/audio_lstm.h5")
+from emotion_recognition.core.audio_processing import extract_mfcc
+from emotion_recognition.inference.prediction import (
+    load_audio_model,
+    load_label_encoder,
+    predict_emotion,
+)
+
+# ===== Functions =====
+
 
 @st.cache_resource
-def load_encoder():
-    with open("data/features.pkl", "rb") as f:
-        _, y = pickle.load(f)
-    le = LabelEncoder()
-    le.fit(y)
-    return le
+def load_audio_model_cached():
+    return load_audio_model()
 
-def extract_mfcc(file_path, n_mfcc=40, max_len=174):
-    y, sr = librosa.load(file_path, sr=22050)
-    mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
-    if mfcc.shape[1] < max_len:
-        pad_width = max_len - mfcc.shape[1]
-        mfcc = np.pad(mfcc, pad_width=((0,0), (0, pad_width)), mode='constant')
-    else:
-        mfcc = mfcc[:, :max_len]
-    return mfcc, y, sr
 
-def predict_emotion(mfcc, model, encoder):
-    mfcc = np.expand_dims(mfcc, axis=0)
-    probs = model.predict(mfcc)[0]
-    predicted = encoder.inverse_transform([np.argmax(probs)])
-    return predicted[0], probs
+@st.cache_resource
+def load_encoder_cached():
+    return load_label_encoder()
+
+
+def process_audio(audio_bytes: bytes) -> tuple:
+    """Process audio bytes and return prediction results."""
+    # Save temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
+        tmp.write(audio_bytes)
+        tmp_path = tmp.name
+
+    # Extract features
+    mfcc = extract_mfcc(tmp_path)
+
+    # Load model and encoder
+    model = load_audio_model_cached()
+    encoder = load_encoder_cached()
+
+    # Make prediction
+    pred, probs = predict_emotion(mfcc, model, encoder)
+
+    # Load audio for visualization
+    import librosa
+
+    y, sr = librosa.load(tmp_path, sr=22050)
+
+    return pred, probs, y, sr
+
 
 # ===== Streamlit UI =====
-st.title("🎤 Распознавание эмоций по аудио")
+st.title("🎤 Emotion Recognition from Audio")
 
-st.subheader("1. Запишите аудио")
+st.subheader("1. Record Audio")
 audio_bytes = audio_recorder()
 
 if audio_bytes:
     st.audio(audio_bytes, format="audio/wav")
 
-    # Сохраняем временный файл
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
-        tmp.write(audio_bytes)
-        tmp_path = tmp.name
+    # Process audio
+    pred, probs, y, sr = process_audio(audio_bytes)
 
-    # Обработка
-    mfcc, y, sr = extract_mfcc(tmp_path)
-    model = load_audio_model()
-    encoder = load_encoder()
-    pred, probs = predict_emotion(mfcc, model, encoder)
+    # Display results
+    st.subheader(f"2. Emotion: **{pred}**")
 
-    # Вывод результата
-    st.subheader(f"2. Эмоция: **{pred}**")
-
-    st.subheader("3. Волновая форма")
+    st.subheader("3. Waveform")
     if len(y) > 0:
         fig, ax = plt.subplots()
+        import librosa.display
+
         librosa.display.waveshow(y, sr=sr, ax=ax)
         st.pyplot(fig)
     else:
-        st.warning("Аудио слишком короткое или пустое для отображения формы сигнала.")
-    st.subheader("4. Распределение вероятностей")
+        st.warning("Audio is too short or empty to display waveform.")
+
+    st.subheader("4. Probability Distribution")
+    encoder = load_encoder_cached()
     st.bar_chart(data=dict(zip(encoder.classes_, probs)))
