@@ -1,18 +1,19 @@
 import os
-import numpy as np
-import librosa
 import pickle
+
+import librosa
+import numpy as np
 
 # Соответствие кода эмоции в названии файла → название эмоции
 EMOTION_LABELS = {
-    '01': 'neutral',
-    '02': 'calm',
-    '03': 'happy',
-    '04': 'sad',
-    '05': 'angry',
-    '06': 'fearful',
-    '07': 'disgust',
-    '08': 'surprised'
+    "01": "neutral",
+    "02": "calm",
+    "03": "happy",
+    "04": "sad",
+    "05": "angry",
+    "06": "fearful",
+    "07": "disgust",
+    "08": "surprised",
 }
 
 
@@ -22,8 +23,7 @@ def extract_mfcc(file_path, n_mfcc=40, max_len=174):
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
     if mfcc.shape[1] < max_len:
         pad_width = max_len - mfcc.shape[1]
-        mfcc = np.pad(mfcc, pad_width=(
-            (0, 0), (0, pad_width)), mode='constant')
+        mfcc = np.pad(mfcc, pad_width=((0, 0), (0, pad_width)), mode="constant")
     else:
         mfcc = mfcc[:, :max_len]
     return mfcc
@@ -33,7 +33,7 @@ def load_data(data_dir):
     X, y = [], []
     for root, _, files in os.walk(data_dir):
         for file in files:
-            if file.endswith('.wav'):
+            if file.endswith(".wav"):
                 filepath = os.path.join(root, file)
                 emotion_code = file.split("-")[2]
                 if emotion_code in EMOTION_LABELS:

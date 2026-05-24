@@ -1,0 +1,15 @@
+# Model conversion configuration
+model_path: "models/audio_lstm.h5"
+onnx_path: "models/audio_lstm.onnx"
+tensorrt_path: "models/audio_lstm.engine"
+
+# Conversion parameters
+onnx_opset: 13
+input_shape: [1, 40, 174]  # [batch, features, timesteps]
+input_name: "audio_input"
+output_name: "emotion_output"
+
+# TensorRT parameters
+tensorrt_precision: "FP32"
+tensorrt_max_workspace_size: 1073741824  # 1GB
+tensorrt_max_batch_size: 8

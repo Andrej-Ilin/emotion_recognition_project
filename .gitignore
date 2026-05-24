@@ -1,7 +1,18 @@
 venv/
-data/
 *.pkl
 models/
 fresh_venv/
 *.pyc
 __pycache__/
+data/
+mlflow.db
+mlruns/
+outputs/
+.hydra/
+*.log
+
+# Allow DVC to track data directory
+!data/.gitignore
+!data/.dvc/
+!data/.dvcignore
+!data/Audio_Speech_Actors_01-24.dvc

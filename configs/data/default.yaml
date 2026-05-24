@@ -1,0 +1,10 @@
+# Data configuration
+data_dir: "data"
+features_path: "data/features.pkl"
+audio_dir: "data/Audio_Speech_Actors_01-24"
+
+# Audio processing parameters
+audio:
+  sample_rate: 22050
+  n_mfcc: 40
+  max_len: 174

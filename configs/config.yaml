@@ -1,0 +1,16 @@
+# Main configuration for emotion recognition project
+defaults:
+  - data: default
+  - model: default
+  - training: default
+  - inference: default
+  - conversion: default
+  - mlflow: default
+
+command: "train"  # Available: train, predict, prepare_data, convert_onnx, convert_tensorrt
+
+# Logging configuration
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/emotion_recognition.log"

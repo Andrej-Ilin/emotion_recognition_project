@@ -1,0 +1,45 @@
+stages:
+  prepare_data:
+    cmd: python emotion_recognition/commands.py prepare_data
+    deps:
+      - data
+    outs:
+      - data/features.pkl
+    params:
+      - configs/data/default.yaml
+
+  train:
+    cmd: python emotion_recognition/commands.py train
+    deps:
+      - data/features.pkl
+      - emotion_recognition
+    outs:
+      - models/audio_lstm.h5
+    params:
+      - configs/model/default.yaml
+      - configs/training/default.yaml
+      - configs/mlflow/default.yaml
+
+  evaluate:
+    cmd: python -c "print('Evaluation would go here')"
+    deps:
+      - models/audio_lstm.h5
+      - data/features.pkl
+
+  convert_onnx:
+    cmd: python emotion_recognition/commands.py convert_onnx
+    deps:
+      - models/audio_lstm.h5
+    outs:
+      - models/audio_lstm.onnx
+    params:
+      - configs/conversion/default.yaml
+
+  convert_tensorrt:
+    cmd: python emotion_recognition/commands.py convert_tensorrt
+    deps:
+      - models/audio_lstm.onnx
+    outs:
+      - models/audio_lstm.engine
+    params:
+      - configs/conversion/default.yaml

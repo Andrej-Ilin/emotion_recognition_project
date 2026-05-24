@@ -1,0 +1,10 @@
+# Model architecture configuration
+lstm_units: 128
+dropout_rate: 0.5
+dense_units: 64
+learning_rate: 0.001
+
+# Model paths
+model_path: "models/audio_lstm.h5"
+onnx_path: "models/audio_lstm.onnx"
+tensorrt_path: "models/audio_lstm.engine"

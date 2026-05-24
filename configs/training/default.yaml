@@ -1,0 +1,15 @@
+# Training configuration
+epochs: 30
+batch_size: 32
+test_size: 0.2
+random_state: 42
+
+# Callbacks
+early_stopping_patience: 5
+model_checkpoint_monitor: "val_accuracy"
+model_checkpoint_mode: "max"
+
+# Training optimization
+validation_split: 0.2
+shuffle: true
+verbose: 1
